@@ -1,4 +1,6 @@
-1. Image Filtering
+Projet Group Members: Hal Brynteson and Farah Kamleh
+
+1. Image Filtering (Leads: Hal and Farah)
     * a) The 4 Gaussian filters are separable filters, as are the first and second order derivatives that are oriented vertically or horizontally. This would make filters 0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 37, 38, 39 all separable. 
     * d) Grayscale Thresholding:
         For each filter, I computed a threshold value that would split the data where everything greater than this value is a mammal, and everything less than is a bird. For this, I took the norm of each filtered image, then split them into bird_norms and mammals_norms. If the largest bird_norm was less than the smallest mammal_norm, I took the average of these two values, and set that as the threshold for that filter. Otherwise, the minimum mammal_norm would be the threshold. With this method, filters 14, 15, and 16, all first order derivative filters, were able to get the best classification. With their associated threshold values, they were able to correctly identify all 8 images. This classification method is based on the assumption that the bird norms are less than the mammal norms which, for filters 0-35, is true. 
