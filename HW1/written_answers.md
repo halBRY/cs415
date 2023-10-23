@@ -1,4 +1,7 @@
-Projet Group Members: Hal Brynteson and Farah Kamleh
+Project Group Members: Hal Brynteson and Farah Kamleh
+
+# CS 415 Computer Vision Homework 1
+## Hal Brynteson 
 
 1. Image Filtering (Leads: Hal and Farah)
     * a) The 4 Gaussian filters are separable filters, as are the first and second order derivatives that are oriented vertically or horizontally. This would make filters 0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 37, 38, 39 all separable. This is proven by the code following the markdown cell that says "Examining Separable Filters". For each filter, I check the rank with the following code: 
@@ -22,18 +25,18 @@ Projet Group Members: Hal Brynteson and Farah Kamleh
         The L1 norms are calculated in the same cell where filters are applied. In the loop that runs for each filter, the `computeMagnitudeRGB()` function is called, and the computed norm for that filter is stored in a 2D `norms` array.
     
         RGB Thresholding:
-        The best classifier is no longer the same. Using the same methods, my threshold values were different, and none of them were able to perfectly classify the group of eight images. This pass was, however, a lot more consistent. Filters 0-35 were nearly entirely correct, and classified everything correctly except for the first bird image. The final filters, 36-47, clssified everything as mammals. 
+        The best classifier is no longer the same. Using the same methods, my threshold values were different, and none of them were able to perfectly classify the group of eight images. This pass was, however, a lot more consistent. Filters 0-35 were nearly entirely correct, and classified everything correctly except for the first bird image. The final filters, 36-47, classified everything as mammals. 
         The final list of thresholds is: 3.1209191443074693, 3.1234109862219, 2.9566955660143672, 2.6000941293039386, 2.6411890017339608, 2.842893237552638, 2.158105511240029, 2.176333393763597, 2.1488769035532993, 1.9431904879861284, 1.958563289571464, 2.116092277012328, 1.6447951414068165, 1.6819760696156636, 1.680084300217549, 1.6035868218974485, 1.6069804310131286, 1.6409662799129805, 1.0083272569444444, 0.9454446371067624, 0.8015011146891255, 0.8227198414664355, 0.8020708446866485, 0.9168255208333334, 0.29846718636693254, 0.26310131285608124, 0.22790686153083972, 0.2277235570968541, 0.20333911320287343, 0.2522764429031459, 0.09607777374909354, 0.08144670050761421, 0.07302121102248006, 0.09179024655547498, 0.06983403517463463, 0.07443437273386512, 561.8210420076377, 656.3985360768673, 685.4718772661349, 705.4531236403191, 397.66315148208764, 210.9112965993817, 140.61666848517913, 105.39749408983451, 140.61666848517913, 64.78721767594108, 20.57806146572104, 1.411656664848154, 0, 3832.031067466812
             The final threshold is for the summed response. 
     
     * f) Non-separated filters took 23.1 seconds, while computation with the separated filters took 17 seconds. Computation with separable filters is faster. The vectors for each separable filter are created in the cell that follows the markdown cell that read "Comparing Separable vs. Non-Separable compute times". They are stored in `filter_vectors` and applied in the `makeResponses_sep()` function, which is called in a loop over each image. 
 
-2. Histogram Equalization (Leads: Hal and Farah)
+2. Histogram Equalization (Lead: Hal)
     * a) In my first pass, a histogram is created by the `l_count_per_pixel()` function. Later, to examine the effect of changing the bin number, I switch to using openCV's histogram function, which I call in my own function, `opencv_hist()`. This is placed in its own function to allow me to optionally normalize. 
     
     * b) Given then I is a probability density function, shifting it would affect the the overall intensity of the image. A shift left would alter the probability that a pixel is darker, so by shifting the majority of pixels to the left, the image, I, would get darker. On the other hand, a shift to the right would increase the probability of high pixel intensity, creating a brighter image. If p is stretched, the contrast of the image will decrease, as the majority of the pixels will fall towards the middle intensity. If p is squashed, the contrast of the image will increase, as the probability shifts so that more pixels will be near maximum and minimum intensity.  
     
-    * c) Using either my own `create_chistogram()` function, or by simply taking the `.cumsum()` of my histogram, I calcualte the CDF. This CDF is then used to create the `transform_map` array, which is used to transform the image. The following code shows the creation of the transform map from the CDF, taking into account smaller bin sizes:
+    * c) Using either my own `create_chistogram()` function, or by simply taking the `.cumsum()` of my histogram, I calculate the CDF. This CDF is then used to create the `transform_map` array, which is used to transform the image. The following code shows the creation of the transform map from the CDF, taking into account smaller bin sizes:
     ```
         #for every possible l value
         for i in range(0, 256):
@@ -57,10 +60,10 @@ Projet Group Members: Hal Brynteson and Farah Kamleh
                 break
     ```
 
-3. Generalized Patch Extraction
-    * a) Given a starting pixel `center`, the `axis_aligned_patch(iamge, center, height, width)` function will take a patch of `image` defined by a bounding box that is `height` tall and `width` wide, centered on the starting pixel `center`.
+3. Generalized Patch Extraction (Lead: Hal)
+    * a) Given a starting pixel `center`, the `axis_aligned_patch(image, center, height, width)` function will take a patch of `image` defined by a bounding box that is `height` tall and `width` wide, centered on the starting pixel `center`.
     * b) 
-        * i) Translating origin to p, where p is the center pixel, and origin is [0,0], simply requires adding px to origin x, and py to origin y. So, the traslation vector would be [px, py].
+        * i) Translating origin to p, where p is the center pixel, and origin is [0,0], simply requires adding px to origin x, and py to origin y. So, the translation vector would be [px, py].
         * ii) The rotation matrix to rotate θ counterclockwise would be as follows:
         ```
         cosθ   -sinθ
@@ -72,9 +75,14 @@ Projet Group Members: Hal Brynteson and Farah Kamleh
         sinθ  cosθ  py
         0     0     1
         ```
-    * c) 
+    * c) Rotated image is moved to a larger canvas by the `rotate_bound()` function
+    * d) The `rotate_bound_scale()` function takes a scaling factor and applies a uniform scale to the scaling matrix. This is done by multiplying the scaling factor to the terms in cells [0,0] and [1,1] in the transformation matirx. This is done because a scaling matrix that scales vector [x,y] by factor s is as follows:
+    ```
+    sx 0
+    0  sy
+    ```
 
-4. Perspective Projection
+4. Perspective Projection (Lead: Hal)
     * a) A circular disk parallel to the image plane would appear circular.
     * b) The equation to get the image plane coordinates would be pt = [-(xt + ut) / (zt + wt)] and qt = [-(yt + ut) / (zt + wt)]. The velocity can be found by taking the difference between 2D points. So, velocity up = pt = p0, and vq = qt - q0. 
     * c)
