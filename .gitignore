@@ -5,6 +5,7 @@
 *.zip
 *.m
 *.mat
+*.webp
 *.html
 *.txt
 /Tesseract-OCR/
