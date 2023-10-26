@@ -1,0 +1,11 @@
+*.png
+*.jpg
+*.exe
+*.dll
+*.zip
+*.m
+*.mat
+*.html
+*.txt
+/Tesseract-OCR/
+/data/
